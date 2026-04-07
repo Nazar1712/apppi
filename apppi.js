@@ -31,11 +31,8 @@ app.listen(3000, () => {
 
 
 app.get('/exhibits', (req, res) => {
-    const sql = `
-        SELECT e.name, c.title, cu.full_name
-        FROM Exhibits e
-        JOIN Collections c ON e.collection_id = c.collection_id
-        JOIN Curators cu ON c.curator_id = cu.curator_id
+    res.json([{ message: "API works ✅" }]);
+});
     `;
 
     db.query(sql, (err, results) => {
@@ -85,5 +82,5 @@ app.delete('/exhibits/:id', (req, res) => {
 
 
 app.listen(3000, () => {
-    console.log(' Server running on http://localhost:3000');
+    console.log('Server running on port 3000');
 });
