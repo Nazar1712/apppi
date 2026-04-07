@@ -21,7 +21,8 @@ jobs:
       - run: npm install
 
       - run: |
-          node app.js &
-          sleep 5
+          node app.js > server.log 2>&1 &
+          sleep 10
+          cat server.log
 
       - run: node test.js
