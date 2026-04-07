@@ -1,0 +1,80 @@
+const express = require('express');
+const mysql = require('mysql2');
+
+const app = express();
+app.use(express.json());
+
+
+const db = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: 'Nazar1230',
+    database: 'museum'
+});
+
+db.connect(err => {
+    if (err) {
+        console.error(' Connection error:', err);
+    } else {
+        console.log(' Connected to MySQL');
+    }
+});
+
+
+app.get('/exhibits', (req, res) => {
+    const sql = `
+        SELECT e.name, c.title, cu.full_name
+        FROM Exhibits e
+        JOIN Collections c ON e.collection_id = c.collection_id
+        JOIN Curators cu ON c.curator_id = cu.curator_id
+    `;
+
+    db.query(sql, (err, results) => {
+        if (err) throw err;
+        res.json(results);
+    });
+});
+
+
+app.post('/exhibits', (req, res) => {
+    const { name, collection_id } = req.body;
+
+    const sql = 'INSERT INTO Exhibits (name, collection_id) VALUES (?, ?)';
+
+    db.query(sql, [name, collection_id], (err, result) => {
+        if (err) throw err;
+        res.json({ message: 'Exhibit added', id: result.insertId });
+    });
+});
+
+
+app.put('/exhibits/:id', (req, res) => {
+    const { name, collection_id } = req.body;
+    const { id } = req.params;
+
+    const sql = `
+        UPDATE Exhibits 
+        SET name = ?, collection_id = ?
+        WHERE exhibit_id = ?
+    `;
+
+    db.query(sql, [name, collection_id, id], (err) => {
+        if (err) throw err;
+        res.json({ message: 'Exhibit updated' });
+    });
+});
+
+
+app.delete('/exhibits/:id', (req, res) => {
+    const { id } = req.params;
+
+    db.query('DELETE FROM Exhibits WHERE exhibit_id = ?', [id], (err) => {
+        if (err) throw err;
+        res.json({ message: 'Exhibit deleted' });
+    });
+});
+
+
+app.listen(3000, () => {
+    console.log(' Server running on http://localhost:3000');
+});
