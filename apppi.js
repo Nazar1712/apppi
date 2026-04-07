@@ -25,25 +25,7 @@ app.get("/exhibits", (req, res) => {
   res.json([{ name: "Test Exhibit" }]);
 });
 
-<<<<<<< HEAD
    
-=======
-app.listen(3000, () => {
-    console.log('Server running on port 3000');
-});
-
-
-app.get('/exhibits', (req, res) => {
-    res.json([{ message: "API works ✅" }]);
-});
-    `;
-
-    db.query(sql, (err, results) => {
-        if (err) throw err;
-        res.json(results);
-    });
-});
->>>>>>> b8a7575053c9155d4bee90f8cf1bb4e5c9869dc4
 
 
 app.post('/exhibits', (req, res) => {
