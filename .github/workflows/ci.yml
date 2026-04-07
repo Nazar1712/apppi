@@ -1,0 +1,43 @@
+name: Museum API CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+
+    - name: Install dependencies
+      run: npm install
+
+    # 🔥 Запуск сервера у фоні
+    - name: Start server
+      run: |
+        node app.js &
+    
+    # 🔥 Даємо серверу час запуститись
+    - name: Wait for server
+      run: sleep 5
+
+    # 🔥 Реальний тест API
+    - name: Test API
+      run: |
+        STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/exhibits)
+        if [ "$STATUS" -ne 200 ]; then
+          echo "❌ API failed with status $STATUS"
+          exit 1
+        else
+          echo "✅ API is working"
+        fi
