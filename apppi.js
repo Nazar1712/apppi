@@ -20,29 +20,12 @@ db.connect(err => {
     }
 });
 
-// 🔥 TEST ROUTE (працює навіть без БД)
-app.get('/exhibits', (req, res) => {
-    res.json([{ message: "API works ✅" }]);
+
+app.get("/exhibits", (req, res) => {
+  res.json([{ name: "Test Exhibit" }]);
 });
 
-app.listen(3000, () => {
-    console.log('Server running on port 3000');
-});
-
-
-app.get('/exhibits', (req, res) => {
-    const sql = `
-        SELECT e.name, c.title, cu.full_name
-        FROM Exhibits e
-        JOIN Collections c ON e.collection_id = c.collection_id
-        JOIN Curators cu ON c.curator_id = cu.curator_id
-    `;
-
-    db.query(sql, (err, results) => {
-        if (err) throw err;
-        res.json(results);
-    });
-});
+   
 
 
 app.post('/exhibits', (req, res) => {
